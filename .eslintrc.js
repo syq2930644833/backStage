@@ -1,29 +1,34 @@
-// https://eslint.org/docs/user-guide/configuring
-
 module.exports = {
-  root: true,
-  parserOptions: {
-    parser: 'babel-eslint'
+  "root": true,
+  "env": {
+    "node": true,
+    "browser": true,
+    "es6": true
   },
-  env: {
-    browser: true,
+  "parser": "vue-eslint-parser",
+  "parserOptions": {
+    "sourceType": "module",
+    "parser": "babel-eslint",
+    "allowImportExportEverywhere": true
   },
-  extends: [
-    // https://github.com/vuejs/eslint-plugin-vue#priority-a-essential-error-prevention
-    // consider switching to `plugin:vue/strongly-recommended` or `plugin:vue/recommended` for stricter rules.
-    'plugin:vue/essential', 
-    // https://github.com/standard/standard/blob/master/docs/RULES-en.md
-    'standard'
+  "extends": ['plugin:vue/recommended', "eslint:recommended"],
+  "plugins": [
+    "vue"
   ],
-  // required to lint *.vue files
-  plugins: [
-    'vue'
-  ],
-  // add your custom rules here
-  rules: {
-    // allow async-await
-    'generator-star-spacing': 'off',
-    // allow debugger during development
-    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off'
+  "rules": {
+    "vue/max-attributes-per-line": ["error", {
+      "singleline": 100
+    }],
+    "vue/html-self-closing": "off",
+    "vue/singleline-html-element-content-newline": "off",
+    "vue/no-v-html": "off",
+    "vue/multiline-html-element-content-newline": "off",
+    "no-unused-vars": "off",
+    "semi": ["error", "never"],
+    "no-async-promise-executor": "off",
+    "no-useless-escape": "off",
+    "no-prototype-builtins": "off",
+    "no-undef": "off",
+    "no-console": "off"
   }
 }
