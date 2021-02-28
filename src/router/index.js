@@ -9,6 +9,12 @@ export default new Router({
   // mode:'history',
   routes: [
     {
+      path: '/login',
+      component: () => import('@/views/login/index'),
+      name: 'login',
+      meta: { title: '登录', affix: true }
+    },
+    {
       path: "/",
       component: Layout,
       redirect: '/homePage',
@@ -17,7 +23,7 @@ export default new Router({
           path: 'homePage',
           component: () => import('@/views/index/index'),
           name: 'homePage',
-          meta: { title: 'homePage', icon: 'dashboard', affix: true }
+          meta: { title: '文章增改', icon: 'dashboard', affix: true }
         }
       ]
     },

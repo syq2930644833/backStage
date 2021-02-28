@@ -24,7 +24,7 @@ _axios.interceptors.request.use(  // 请求拦截器
 _axios.interceptors.response.use( // 响应拦截器
     response => {
         if (response.data.code === 2000) {
-            return response.data.data
+            return response.data
         } else {
             const msg = response.data.errmsg || response.data.msg
             if (msg) Message.warning({
@@ -44,7 +44,6 @@ export default function request(method, url, query = {}, config = {}) {
     } else {
         config.data = query
     }
-    console.log(config)
     return _axios({
         url,
         ...config,

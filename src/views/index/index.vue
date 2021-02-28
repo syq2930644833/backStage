@@ -27,7 +27,7 @@ export default {
         form:{
             title:'',
             introduction:'',
-            author:'壹朵小花吖',
+            author:'',
             hidden: false
         },
         rules: {
@@ -82,8 +82,13 @@ export default {
         }
     }
   },
+  computed:{
+    userInfo(){
+      return this.$store.getters.userInfo
+    }
+  },
   mounted() {
-      console.log('Test: ', Test.CreateArticle)
+      this.form.author = this.userInfo.nikeName
   },
   methods: {
     imgAdd(pos, file){
@@ -113,6 +118,7 @@ export default {
         this.$refs['form'].validate((valid) => {
           if (valid) {
             let params = {
+              user_id : this.userInfo._id,
               title: this.form.title,
               author: this.form.author,
               introduction: this.form.introduction,
@@ -121,8 +127,15 @@ export default {
                   commentHtml: render
               }
             }
-            Test.CreateArticle(params).then(res => {
-                console.log('res: ', res)
+            Test.CreateArticle(params).then(({code,message}) => {
+                if(code == 2000){
+                  this.form.title = ''
+                  this.form.introduction = ''
+                  this.value = ''
+                  return this.$message({message:message,type:'success',duration:2000})
+                }else{
+                  return this.$message({message:message,type:'warning',duration:2000})
+                }
             }).catch(err => {
               console.log('err: ', err)
             })
