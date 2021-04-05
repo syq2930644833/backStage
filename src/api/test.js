@@ -13,6 +13,12 @@ const apis = {
         title: '查找文章',
         uri: 'v1/test/findArticle',
         method: methods.HTTP_GET
+    },
+    FindArticleType: {
+        name: 'FindArticleType',
+        title: '查找文章类型',
+        uri: 'v1/test/findArticleType',
+        method: methods.HTTP_GET
     }
 }
 

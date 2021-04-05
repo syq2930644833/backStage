@@ -5,6 +5,7 @@
 </template>
 
 <script>
+import { removeToken } from '@/utils/auth'
 export default {
   name: "App",
   created() {
@@ -24,7 +25,12 @@ export default {
     window.addEventListener("beforeunload", () => {
       sessionStorage.setItem("store", JSON.stringify(this.$store.state))
     })
-  },
+
+    window.addEventListener("unload", () => {
+      sessionStorage.clear()
+      removeToken()
+    })
+  }
 }
 </script>
 

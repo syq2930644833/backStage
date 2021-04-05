@@ -1,5 +1,4 @@
 import router from './router'
-import store from './store'
 import { Message } from 'element-ui'
 import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
@@ -15,7 +14,8 @@ router.beforeEach((to, from, next) => {
 
    const token = getToken()
    console.log('token: ', token)
-
+//    const tokenTwo = JSON.parse(sessionStorage.getItem('store'))
+//    console.log('tokenTwo: ', tokenTwo)
     if(token){
        /* has token */
         if (to.path === '/login') {
@@ -27,6 +27,7 @@ router.beforeEach((to, from, next) => {
             next()
         }
     }else{
+        console.log(to.path)
         /* has no token */
         if(to.path == '/' || to.path == '/homePage'){
            // in the free login whitelist, go directly

@@ -13,14 +13,25 @@
       <el-form-item label="是否隐藏" class="hidden">
         <el-switch v-model="form.hidden"></el-switch>
       </el-form-item>
+      <el-form-item label="文章类型" class="hidden">
+        <el-select v-model="form.type" placeholder="请选择">
+          <el-option
+            v-for="item in selectOptions"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
+      </el-form-item>
     </el-form>
-    <mavon-editor v-model="value" @imgAdd="imgAdd" @imgDel="imgDel" @save="editorSave" />
+    <mavon-editor ref="md" v-model="value" @imgAdd="imgAdd" @imgDel="imgDel" @save="editorSave" />
   </div>
 </template>
 
 <script>
 // import Editor from 'wangeditor'
-import { Test } from '@/api'
+import { Test, Upload } from '@/api'
+import axios from 'axios'
 export default {
   data() {
     return {
@@ -28,7 +39,8 @@ export default {
             title:'',
             introduction:'',
             author:'',
-            hidden: false
+            hidden: false,
+            type:''
         },
         rules: {
             title: [
@@ -39,9 +51,13 @@ export default {
             ],
             author: [
                 {required: true, message: '请输入文章作者', trigger: 'blur'}
+            ],
+            type: [
+                {required: true, message: '请选择文章类型', trigger: 'blur'}
             ]
         },
         value:'',
+        selectOptions:[],
         /**
          * @toolbars 菜单栏配置项
          */
@@ -87,29 +103,29 @@ export default {
       return this.$store.getters.userInfo
     }
   },
+  created() {
+    this.findArticleType()
+    this.form.author = this.userInfo.nikeName
+  },
   mounted() {
-      this.form.author = this.userInfo.nikeName
+    
   },
   methods: {
     imgAdd(pos, file){
         console.log('pos, file: ', pos, file)
         // 第一步.将图片上传到服务器.
-        // var formdata = new FormData()
-        // formdata.append('image', $file)
-        // axios({
-        //     url: 'server url',
-        //     method: 'post',
-        //     data: formdata,
-        //     headers: { 'Content-Type': 'multipart/form-data' },
-        // }).then((url) => {
+        var formdata = new FormData()
+        formdata.append('file', file)
+        Upload.upload(formdata).then(({code,filepath}) => {
         //     第二步.将返回的url替换到文本原位置![...](0) -> ![...](url)
-        //     /**
-        //    * $vm 指为mavonEditor实例，可以通过如下两种方式获取
-        //    * 1. 通过引入对象获取: `import {mavonEditor} from ...` 等方式引入后，`$vm`为`mavonEditor`
-        //    * 2. 通过$refs获取: html声明ref : `<mavon-editor ref=md ></mavon-editor>，`$vm`为 `this.$refs.md`
-        //    */
-        //     $vm.$img2Url(pos, url);
-        // })
+            /**
+           * $vm 指为mavonEditor实例，可以通过如下两种方式获取
+           * 1. 通过引入对象获取: `import {mavonEditor} from ...` 等方式引入后，`$vm`为`mavonEditor`
+           * 2. 通过$refs获取: html声明ref : `<mavon-editor ref=md ></mavon-editor>，`$vm`为 `this.$refs.md`
+           */
+          console.log('this.$refs.md: ', this.$refs.md)
+            this.$refs.md.$img2Url(pos, filepath)
+        })
     },
     imgDel(){
 
@@ -121,6 +137,7 @@ export default {
               user_id : this.userInfo._id,
               title: this.form.title,
               author: this.form.author,
+              type: this.form.type,
               introduction: this.form.introduction,
               comments: {
                   commentStr: value,
@@ -143,6 +160,21 @@ export default {
             return this.$message({message:'请填写必填项',type:'warning',duration:2000})
           }
         })
+    },
+    /**
+     * 查找文章类型
+     */
+    findArticleType(){
+      Test.FindArticleType().then(({code,data,message}) => {
+        if(code == 2000){
+          this.selectOptions = data
+          this.form.type = data[0].value
+        }else{
+          return this.$message({message:message,type:'warning',duration:2000})
+        }
+      }).catch(err =>{
+        console.error(err)
+      })
     }
   }
 }
